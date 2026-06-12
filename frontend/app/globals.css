@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  @apply bg-surface-muted text-ink antialiased;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-lg border border-surface-border bg-surface p-4 shadow-card;
+  }
+
+  .panel-title {
+    @apply text-xs font-semibold uppercase tracking-wide text-ink;
+  }
+
+  /** Vertical stack for panel content (text, inputs, buttons). */
+  .panel-stack {
+    @apply flex flex-col gap-4;
+  }
+
+  /** Tighter stack for grouped controls under a label. */
+  .panel-section {
+    @apply flex flex-col gap-3;
+  }
+
+  /** Divider between combined card sections. */
+  .panel-divider {
+    @apply border-t border-surface-border pt-4;
+  }
+
+  /** Horizontal button groups. */
+  .btn-row {
+    @apply flex flex-wrap items-center gap-3;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-surface-border bg-surface px-3 py-2 text-sm font-medium text-ink transition hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply border-transparent bg-ink text-white hover:bg-zinc-800;
+  }
+
+  .btn-accent {
+    @apply border-transparent bg-accent text-white hover:bg-accent-hover;
+  }
+
+  .btn-icon {
+    @apply h-9 w-9 p-0;
+  }
+
+  .label {
+    @apply mb-2 block text-[10px] font-semibold uppercase tracking-wide text-ink-muted;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-surface-border bg-surface px-3 py-2 text-sm text-ink outline-none ring-accent focus:ring-2;
+  }
+}
