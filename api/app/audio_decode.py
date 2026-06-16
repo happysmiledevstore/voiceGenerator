@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from core.recorder import SAMPLE_RATE, load_audio_file
+from core.audio_io import SAMPLE_RATE, load_audio_file
 
 _WEB_FORMATS = {".webm", ".ogg", ".mp4", ".m4a", ".aac", ".mp3", ".flac"}
 

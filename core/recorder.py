@@ -6,11 +6,11 @@ Captures audio in a background thread; callers poll or connect to signals.
 import threading
 import numpy as np
 import sounddevice as sd
-import soundfile as sf
 from typing import Optional, Callable
 
+from core.audio_io import SAMPLE_RATE, load_audio_file, save_audio_file
 
-SAMPLE_RATE = 44100
+__all__ = ["Recorder", "SAMPLE_RATE", "load_audio_file", "save_audio_file"]
 CHANNELS = 1
 DTYPE = "float32"
 
@@ -97,17 +97,3 @@ class Recorder:
             self._frames.append(chunk)
         if self.on_chunk is not None:
             self.on_chunk(chunk.flatten())
-
-
-def load_audio_file(path: str, target_sr: int = SAMPLE_RATE) -> tuple[np.ndarray, int]:
-    """Load any audio file and return (float32 mono array, sample_rate)."""
-    import librosa  # lazy import — heavy dependency
-    audio, sr = librosa.load(path, sr=target_sr, mono=True)
-    return audio.astype(np.float32), sr
-
-
-def save_audio_file(path: str, audio: np.ndarray, sample_rate: int = SAMPLE_RATE) -> None:
-    """Save a float32 numpy array as a WAV file."""
-    # Clamp to [-1, 1] to prevent clipping artefacts in the file header
-    audio_clamped = np.clip(audio, -1.0, 1.0)
-    sf.write(path, audio_clamped, sample_rate)
