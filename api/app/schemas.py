@@ -57,6 +57,8 @@ class SavedVoiceProfile(VoiceProfile):
     id: str
     created_at: str
     updated_at: str
+    is_sample: bool = False
+    description: str | None = None
 
 
 class SaveProfileRequest(BaseModel):

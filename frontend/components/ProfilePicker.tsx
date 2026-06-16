@@ -53,6 +53,7 @@ export function ProfilePicker({
         <option value="">— None —</option>
         {profiles.map((p) => (
           <option key={p.id} value={p.id}>
+            {p.is_sample ? "★ " : ""}
             {p.name} ({p.pitch_mean.toFixed(0)} Hz)
           </option>
         ))}

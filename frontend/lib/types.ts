@@ -34,6 +34,8 @@ export interface SavedVoiceProfile extends VoiceProfile {
   id: string;
   created_at: string;
   updated_at: string;
+  is_sample?: boolean;
+  description?: string | null;
 }
 
 export interface OfflineVoice {
