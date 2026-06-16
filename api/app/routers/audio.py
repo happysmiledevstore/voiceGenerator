@@ -2,8 +2,6 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
 from ..audio_decode import decode_uploaded_file
-from core.voice_changer import PRESETS, VoiceChanger
-
 from ..schemas import ApplyPresetRequest, AudioMeta, PresetInfo, TransformRequest, TransformResponse
 from ..storage import audio_store
 
@@ -12,6 +10,8 @@ router = APIRouter(prefix="/audio", tags=["audio"])
 
 @router.get("/presets", response_model=list[PresetInfo])
 def list_presets() -> list[PresetInfo]:
+    from core.voice_changer import PRESETS
+
     return [
         PresetInfo(
             name=name,
@@ -73,6 +73,8 @@ def download_audio(audio_id: str):
 
 @router.post("/transform", response_model=TransformResponse)
 def transform_audio(body: TransformRequest) -> TransformResponse:
+    from core.voice_changer import VoiceChanger
+
     try:
         audio, sr = audio_store.load_audio(body.audio_id)
     except FileNotFoundError as exc:
@@ -93,6 +95,8 @@ def transform_audio(body: TransformRequest) -> TransformResponse:
 
 @router.post("/apply-preset", response_model=TransformResponse)
 def apply_preset(body: ApplyPresetRequest) -> TransformResponse:
+    from core.voice_changer import PRESETS, VoiceChanger
+
     preset = PRESETS.get(body.preset_name)
     if preset is None:
         raise HTTPException(404, f"Preset '{body.preset_name}' not found.")

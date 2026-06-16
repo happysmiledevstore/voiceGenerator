@@ -1,9 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
-from core.voice_changer import VoiceChanger
-from core.voice_profile import analyse_voice, profile_to_transform_params
-
 from ..profile_store import profile_store
 from ..schemas import (
     ApplyProfileRequest,
@@ -63,6 +60,8 @@ def export_profile(profile_id: str):
 @router.post("/save", response_model=SavedVoiceProfile)
 def save_profile(body: SaveProfileRequest) -> SavedVoiceProfile:
     if body.audio_id:
+        from core.voice_profile import analyse_voice
+
         try:
             audio, sr = audio_store.load_audio(body.audio_id)
         except FileNotFoundError as exc:
@@ -106,6 +105,8 @@ def delete_profile(profile_id: str) -> dict:
 
 @router.post("/analyze", response_model=VoiceProfile)
 def analyze_profile(body: ProfileAnalyzeRequest) -> VoiceProfile:
+    from core.voice_profile import analyse_voice
+
     try:
         audio, sr = audio_store.load_audio(body.audio_id)
     except FileNotFoundError as exc:
@@ -121,6 +122,9 @@ def analyze_profile(body: ProfileAnalyzeRequest) -> VoiceProfile:
 
 @router.post("/apply", response_model=TransformResponse)
 def apply_profile(body: ApplyProfileRequest) -> TransformResponse:
+    from core.voice_changer import VoiceChanger
+    from core.voice_profile import profile_to_transform_params
+
     try:
         audio, sr = audio_store.load_audio(body.audio_id)
     except FileNotFoundError as exc:

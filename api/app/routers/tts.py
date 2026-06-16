@@ -1,7 +1,5 @@
 from fastapi import APIRouter, HTTPException
 
-from core.tts_engine import LANGUAGES, TTSEngine
-
 from ..schemas import AudioMeta, TTSRequest, TTSResponse
 from ..storage import audio_store
 
@@ -10,17 +8,23 @@ router = APIRouter(prefix="/tts", tags=["tts"])
 
 @router.get("/languages")
 def list_languages() -> dict[str, str]:
+    from core.tts_engine import LANGUAGES
+
     return LANGUAGES
 
 
 @router.get("/voices")
 def list_offline_voices() -> list[dict]:
+    from core.tts_engine import TTSEngine
+
     engine = TTSEngine()
     return engine.get_offline_voices()
 
 
 @router.post("/generate", response_model=TTSResponse)
 def generate_speech(body: TTSRequest) -> TTSResponse:
+    from core.tts_engine import TTSEngine
+
     engine = TTSEngine()
     try:
         audio, sr = engine.synthesize(
