@@ -68,6 +68,7 @@ def download_audio(audio_id: str):
         record.path,
         media_type="audio/wav",
         filename=f"{audio_id}.wav",
+        content_disposition_type="inline",
     )
 
 
