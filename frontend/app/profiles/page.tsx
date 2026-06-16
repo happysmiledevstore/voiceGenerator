@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { UploadButton } from "@/components/AudioRecorder";
 import { Spinner } from "@/components/Spinner";
+import { useApiHealth } from "@/hooks/useApiHealth";
 import {
-  checkHealth,
   deleteSavedProfile,
   fetchSavedProfiles,
   profileExportUrl,
@@ -25,7 +25,7 @@ function formatDate(iso: string) {
 }
 
 export default function ProfilesPage() {
-  const [apiOnline, setApiOnline] = useState(false);
+  const apiOnline = useApiHealth();
   const [status, setStatus] = useState("Manage your saved voice profiles.");
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -51,7 +51,6 @@ export default function ProfilesPage() {
   }, [selected]);
 
   useEffect(() => {
-    checkHealth().then(setApiOnline);
     fetchSavedProfiles()
       .then(setProfiles)
       .catch(() => setProfiles([]));
@@ -188,7 +187,7 @@ export default function ProfilesPage() {
             />
             <div className="btn-row">
               <UploadButton
-                disabled={pageBusy || !apiOnline}
+                disabled={pageBusy}
                 loading={uploading}
                 onFile={handleUploadForProfile}
               />

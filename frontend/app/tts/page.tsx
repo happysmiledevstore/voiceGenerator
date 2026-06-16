@@ -8,10 +8,10 @@ import { Spinner } from "@/components/Spinner";
 import { TransportBar } from "@/components/TransportBar";
 import { Waveform } from "@/components/Waveform";
 import { useAutoTransform } from "@/hooks/useAutoTransform";
+import { useApiHealth } from "@/hooks/useApiHealth";
 import {
   applyVoiceProfile,
   audioFileUrl,
-  checkHealth,
   fetchOfflineVoices,
   fetchPresets,
   generateTTS,
@@ -22,7 +22,7 @@ import type { EffectName, OfflineVoice, PresetInfo, SavedVoiceProfile, Transform
 const TTS_LANGUAGES = ["English", "Spanish", "French", "German", "Japanese"] as const;
 
 export default function TTSPage() {
-  const [apiOnline, setApiOnline] = useState(false);
+  const apiOnline = useApiHealth();
   const [status, setStatus] = useState("Enter text and generate speech.");
   const [processing, setProcessing] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -61,7 +61,6 @@ export default function TTSPage() {
   });
 
   useEffect(() => {
-    checkHealth().then(setApiOnline);
     fetchOfflineVoices()
       .then(setVoices)
       .catch(() => { });
@@ -161,7 +160,7 @@ export default function TTSPage() {
               placeholder="Type text to synthesise..."
               value={text}
               onChange={(e) => setText(e.target.value)}
-              disabled={busy || !apiOnline}
+              disabled={busy}
             />
             <p className="shrink-0 text-center text-[11px] text-ink-muted">{text.length} characters</p>
 
@@ -171,7 +170,7 @@ export default function TTSPage() {
                   type="radio"
                   checked={engine === "gtts"}
                   onChange={() => setEngine("gtts")}
-                  disabled={busy || !apiOnline}
+                  disabled={busy}
                 />
                 gTTS
               </label>
@@ -180,7 +179,7 @@ export default function TTSPage() {
                   type="radio"
                   checked={engine === "offline"}
                   onChange={() => setEngine("offline")}
-                  disabled={busy || !apiOnline}
+                  disabled={busy}
                 />
                 Offline
               </label>
@@ -192,7 +191,7 @@ export default function TTSPage() {
                   className="input flex-1"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  disabled={busy || !apiOnline}
+                  disabled={busy}
                 >
                   {TTS_LANGUAGES.map((lang) => (
                     <option key={lang} value={lang}>
@@ -205,7 +204,7 @@ export default function TTSPage() {
                     type="checkbox"
                     checked={slow}
                     onChange={(e) => setSlow(e.target.checked)}
-                    disabled={busy || !apiOnline}
+                    disabled={busy}
                   />
                   Slow
                 </label>
@@ -215,7 +214,7 @@ export default function TTSPage() {
                 className="input shrink-0"
                 value={voiceId}
                 onChange={(e) => setVoiceId(e.target.value)}
-                disabled={busy || !apiOnline}
+                disabled={busy}
               >
                 <option value="">Default voice</option>
                 {voices.map((v) => (
@@ -229,7 +228,7 @@ export default function TTSPage() {
             <button
               type="button"
               className="btn btn-primary flex w-full shrink-0 items-center justify-center gap-2 py-2 text-sm font-semibold"
-              disabled={busy || !apiOnline}
+              disabled={busy}
               onClick={() => void handleGenerate()}
             >
               {generating ? (
@@ -247,7 +246,7 @@ export default function TTSPage() {
             <ProfilePicker
               selectedId={selectedProfile?.id ?? null}
               onSelect={setSelectedProfile}
-              disabled={busy || !apiOnline}
+              disabled={busy}
               embedded
             />
           </div>
@@ -272,7 +271,7 @@ export default function TTSPage() {
               onApplyProfile={handleApplyProfile}
               profileEnabled={!!selectedProfile && !!rawId}
               profileLoading={profileLoading}
-              disabled={busy || !apiOnline}
+              disabled={busy}
               applying={processing}
             />
           </div>

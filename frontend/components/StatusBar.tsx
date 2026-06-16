@@ -19,6 +19,11 @@ export function StatusBar({ message, apiOnline, processing }: StatusBarProps) {
         <span
           className={`rounded-full px-2 py-0.5 font-medium ${apiOnline ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"
             }`}
+          title={
+            apiOnline
+              ? undefined
+              : "Set API_URL in Vercel to your deployed FastAPI backend, then redeploy."
+          }
         >
           API {apiOnline ? "online" : "offline"}
         </span>

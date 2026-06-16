@@ -7,9 +7,9 @@ import { EffectsAndSavePanel } from "@/components/EffectsAndSavePanel";
 import { TransportBar } from "@/components/TransportBar";
 import { Waveform } from "@/components/Waveform";
 import { useAutoTransform } from "@/hooks/useAutoTransform";
+import { useApiHealth } from "@/hooks/useApiHealth";
 import {
   audioFileUrl,
-  checkHealth,
   fetchPresets,
   saveProfile,
   uploadAudio,
@@ -18,7 +18,7 @@ import { DEFAULT_EFFECTS } from "@/lib/effects";
 import type { EffectName, PresetInfo, TransformParams } from "@/lib/types";
 
 export default function RecorderPage() {
-  const [apiOnline, setApiOnline] = useState(false);
+  const apiOnline = useApiHealth();
   const [status, setStatus] = useState("Record or upload audio to get started.");
   const [processing, setProcessing] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -49,7 +49,6 @@ export default function RecorderPage() {
   });
 
   useEffect(() => {
-    checkHealth().then(setApiOnline);
     fetchPresets()
       .then((list) => {
         setPresets(list.map((x) => x.name));
@@ -128,13 +127,13 @@ export default function RecorderPage() {
             <div className="flex items-center justify-between gap-3">
               <h2 className="panel-title">Record</h2>
               <UploadButton
-                disabled={busy || !apiOnline}
+                disabled={busy}
                 loading={uploading}
                 onFile={(file) => ingest(file, file.name)}
               />
             </div>
             <AudioRecorder
-              disabled={busy || !apiOnline}
+              disabled={busy}
               loadedDuration={duration}
               onRecorded={(blob) => ingest(blob, "recording.wav")}
             />
@@ -153,7 +152,7 @@ export default function RecorderPage() {
             <TransportBar
               audioUrl={currentUrl}
               onDownload={handleDownload}
-              disabled={busy || !apiOnline}
+              disabled={busy}
               applying={processing}
             />
           </div>

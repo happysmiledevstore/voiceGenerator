@@ -8,11 +8,10 @@ import type {
   TTSResponse,
   VoiceProfile,
 } from "./types";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { getApiBase } from "./api-base";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, init);
+  const res = await fetch(`${getApiBase()}${path}`, init);
   if (!res.ok) {
     let detail = res.statusText;
     try {
@@ -30,7 +29,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export function audioFileUrl(audioId: string): string {
-  return `${API_BASE}/api/audio/${audioId}/file`;
+  return `${getApiBase()}/api/audio/${audioId}/file`;
 }
 
 export async function uploadAudio(file: Blob, filename = "recording.webm"): Promise<AudioMeta> {
@@ -128,7 +127,7 @@ export async function updateSavedProfile(
 }
 
 export function profileExportUrl(profileId: string): string {
-  return `${API_BASE}/api/profiles/${profileId}/export`;
+  return `${getApiBase()}/api/profiles/${profileId}/export`;
 }
 
 export async function applyVoiceProfile(
@@ -148,7 +147,7 @@ export async function applyVoiceProfile(
 
 export async function checkHealth(): Promise<boolean> {
   try {
-    const res = await fetch(`${API_BASE}/health`);
+    const res = await fetch(`${getApiBase()}/health`, { cache: "no-store" });
     return res.ok;
   } catch {
     return false;
