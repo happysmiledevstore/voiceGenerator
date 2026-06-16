@@ -1,10 +1,12 @@
 # Railway/Nixpacks: deploy FastAPI from api/ (not desktop requirements.txt at repo root).
 
+providers = ["python"]
+
+[variables]
+NIXPACKS_PYTHON_VERSION = "3.12"
+
 [phases.setup]
 aptPkgs = ["ffmpeg"]
 
 [phases.install]
-cmds = ["pip install -r api/requirements.txt"]
-
-[start]
-cmd = "python -m uvicorn api.app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+cmds = ["python -m pip install -r api/requirements.txt"]
